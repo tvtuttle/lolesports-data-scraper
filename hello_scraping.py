@@ -55,5 +55,8 @@ print(no_html is None)
 # this will demo the gamepedia site instead of their simple html structure
 raw_html = simple_get('https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards')
 html = BeautifulSoup(raw_html, 'html.parser')
-for div in html.find_all(class_='sb-p-stat'): # because class is a python keyword, use class_ instead
-    print(div.text)
+for div in html.find_all(class_='sb-p-info'): # because class is a python keyword, use class_ instead
+    print(div.contents[0].text) #name
+    # print(div.contents[1].text) #stats, has more children
+    for stat in div.contents[1]:
+        print(stat.text)
