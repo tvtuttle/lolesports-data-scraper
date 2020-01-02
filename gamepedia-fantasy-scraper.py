@@ -71,12 +71,24 @@ for div in html.find_all(class_='sb-p-info'):
         players[name][3] += cs
 
 # Test: traverse dictionary and print names and related stats
-for player in players:
-    out = "{}: {}/{}/{}, {} cs"
-    print(out.format(player, players[player][0], players[player][1], players[player][2], players[player][3]))
+# for player in players:
+#     out = "{}: {}/{}/{}, {} cs"
+#     print(out.format(player, players[player][0], players[player][1], players[player][2], players[player][3]))
 
 # organize teams and their relevant stats
+# there are three areas on the table from which to harvest team stats:
+# the top row (names), the sb-header (win/loss, gold, kills), and the sb-footer
+for div in html.find_all(class_='sb'):
+    # we need to get 2 names per scoreboard
+    # but the header and footer have 1 entry per team
+    # so we'll collect two teams at once, put in organized 2-team list, then combine and add info to dict
+    sb_teams = list()
+    for name in div.find_all(class_='sb-teamname'):
+        sb_teams.append(name.text)
+        print(name.text)
 
+# div = html.find(class_="sb-teamname")
+# print(div.text)
 
 
 
