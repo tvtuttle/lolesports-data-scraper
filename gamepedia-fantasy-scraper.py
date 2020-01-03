@@ -71,24 +71,70 @@ for div in html.find_all(class_='sb-p-info'):
         players[name][3] += cs
 
 # Test: traverse dictionary and print names and related stats
-# for player in players:
-#     out = "{}: {}/{}/{}, {} cs"
-#     print(out.format(player, players[player][0], players[player][1], players[player][2], players[player][3]))
+print("Test: Player stats for Week 1, Summer 2019")
+for player in players:
+    out = "{}: {}/{}/{}, {} cs"
+    print(out.format(player, players[player][0], players[player][1], players[player][2], players[player][3]))
 
 # organize teams and their relevant stats
 # there are three areas on the table from which to harvest team stats:
 # the top row (names), the sb-header (win/loss, gold, kills), and the sb-footer
+teams = dict()
 for div in html.find_all(class_='sb'):
     # we need to get 2 names per scoreboard
-    # but the header and footer have 1 entry per team
+    # header entries are differentiated by side
+    # looks like 2 footers per scoreboard?
     # so we'll collect two teams at once, put in organized 2-team list, then combine and add info to dict
-    sb_teams = list()
-    for name in div.find_all(class_='sb-teamname'):
-        sb_teams.append(name.text)
-        print(name.text)
+    blue = list()
+    red = list()
+    names = div.find_all(class_='sb-teamname')
+    blue_name = names[0].text
+    red_name = names[1].text
+    blue_header = div.find(class_='side-blue')
+    red_header = div.find(class_ = 'side-red')
+    blue_result = int(blue_header.text)
+    red_result = int(red_header.text)
+    footers = div.find_all(class_='sb-footer-stats')
+    blue_footer = footers[0]
+    red_footer = footers[1]
+    # stats in footer are in order: towers, inhibs, barons, dragons, heralds
+    # we will count everything except inhibs
+    # with this, we will have all the stats we need (except first bloods, which we will ignore this season)
+    # also, probably also not elder dragons; elder takes will count as much as regular dragon takes
+    blue_towers = int(blue_footer.contents[0].text)
+    blue_barons = int(blue_footer.contents[2].text)
+    blue_dragons = int(blue_footer.contents[3].text)
+    blue_heralds = int(blue_footer.contents[4].text)
 
-# div = html.find(class_="sb-teamname")
-# print(div.text)
+    red_towers = int(red_footer.contents[0].text)
+    red_barons = int(red_footer.contents[2].text)
+    red_dragons = int(red_footer.contents[3].text)
+    red_heralds = int(red_footer.contents[4].text)
 
+    # check for presence in team dict and then add accordingly
+    if blue_name not in teams:
+        teams[blue_name] = [blue_result, blue_towers, blue_barons, blue_dragons, blue_heralds]
+    else:
+        teams[blue_name][0] += blue_result
+        teams[blue_name][1] += blue_towers
+        teams[blue_name][2] += blue_barons
+        teams[blue_name][3] += blue_dragons
+        teams[blue_name][4] += blue_heralds
+
+    # do the same for red
+    if red_name not in teams:
+        teams[red_name] = [red_result, red_towers, red_barons, red_dragons, red_heralds]
+    else:
+        teams[red_name][0] += red_result
+        teams[red_name][1] += red_towers
+        teams[red_name][2] += red_barons
+        teams[red_name][3] += red_dragons
+        teams[red_name][4] += red_heralds
+
+# Test: traverse team dictionary to print names and related stats
+print("Test: Team stats for Week 1, Summer 2019")
+for team in teams:
+    out = "{}: {} wins, {} towers, {} barons, {} dragons, {} rift heralds"
+    print(out.format(team, teams[team][0], teams[team][1], teams[team][2], teams[team][3], teams[team][4]))
 
 
