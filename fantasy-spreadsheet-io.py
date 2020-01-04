@@ -5,3 +5,5 @@
 
 # before setting up import, i'll need to decide what the spreadsheet will look like
 # so, first, work on a demo fantasy spreadsheet on google sheets
+# the input should just take the form of fantasy player, chosen team, chosen players
+print('hello world')
