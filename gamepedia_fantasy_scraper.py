@@ -35,7 +35,7 @@ def good_response(resp):
 # currently using old statistics from 2019 summer, hopefully wiki format does not change, will update if so
 
 if __name__ == '__main__':
-    url = 'https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards' # week 1 stats, later weeks append(/Week_#)
+    url = 'https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards/Week 2' # week 1 stats, later weeks append(/Week_#)
 
     raw_html = get_html(url)
     print(raw_html is not None) # check for good response
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             players[name][3] += cs
 
     # Test: traverse dictionary and print names and related stats
-    print("Test: Player stats for Week 1, Summer 2019")
+    print("Test: Player stats for Week 2, Summer 2019")
     for player in players:
         out = "{}: {}/{}/{}, {} cs"
         print(out.format(player, players[player][0], players[player][1], players[player][2], players[player][3]))
@@ -155,7 +155,7 @@ if __name__ == '__main__':
             teams[red_name][5] += red_fastwin
 
     # Test: traverse team dictionary to print names and related stats
-    print("Test: Team stats for Week 1, Summer 2019")
+    print("Test: Team stats for Week 2, Summer 2019")
     for team in teams:
         out = "{}: {} wins, {} towers, {} barons, {} dragons, {} rift heralds, {} <30 min wins"
         print(out.format(team, teams[team][0], teams[team][1], teams[team][2], teams[team][3], teams[team][4], teams[team][5]))
