@@ -46,7 +46,12 @@ if __name__ == '__main__':
     # player data will be stored in dictionary, with name as key
     # when same playername appears, stats are added to existing entry
     players = dict()
+    pos = 0 # we'll use increments to determine player position via mod operator
     for div in html.find_all(class_='sb-p-info'):
+        pos = pos + 1
+        player_pos = pos % 5
+        # KEY: 1 = top, 2 = jung, 3 = mid, 4 = bot, 0 = supp
+        print(pos)
         # get name
         name = div.contents[0].text
         # print(name)
@@ -64,7 +69,7 @@ if __name__ == '__main__':
 
         # organize name and stats together into a list (not tuple, we need to change values), check and insert into dict
         if name not in players:
-            players[name] = [k, d, a, cs]
+            players[name] = [k, d, a, cs, player_pos]
         else:
             # add int values to existing name entry
             players[name][0] += k
@@ -75,8 +80,8 @@ if __name__ == '__main__':
     # Test: traverse dictionary and print names and related stats
     print("Test: Player stats for Week 2, Summer 2019")
     for player in players:
-        out = "{}: {}/{}/{}, {} cs"
-        print(out.format(player, players[player][0], players[player][1], players[player][2], players[player][3]))
+        out = "In Position {}, {}: {}/{}/{}, {} cs"
+        print(out.format(players[player][4], player, players[player][0], players[player][1], players[player][2], players[player][3]))
 
     # organize teams and their relevant stats
     # there are three areas on the table from which to harvest team stats:
