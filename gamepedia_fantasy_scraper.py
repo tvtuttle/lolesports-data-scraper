@@ -168,6 +168,7 @@ def get_scoreboard(url):
 
     return [players, teams]
 
+
 if __name__ == '__main__':
     url = 'https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards/Week 2' # week 1 stats, later weeks append(/Week_#)
 
