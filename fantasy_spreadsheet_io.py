@@ -15,6 +15,7 @@
 import pandas as pd
 from gamepedia_fantasy_scraper import get_scoreboard
 import numpy as np
+from spreadsheet_formatting import output_fantasy_results
 
 # import simple input spreadsheet using pandas and read as dataframe
 if __name__ == '__main__':
@@ -67,6 +68,23 @@ if __name__ == '__main__':
                 score = round(2*p_stats[0] - 0.5*p_stats[1] + 1.5 * p_stats[2] + 0.01*p_stats[3], 2)
                 # print(score)
                 fantasy_results[name].append((p, score, p_stats[4]))
+            else:
+                # get the row the player is in from team input (not scraper)
+                # hackjob: just loop through all potential position columns and check presence
+                pos = int()
+                if p in row['Top']:
+                    pos = 1
+                elif p in row['Jungle']:
+                    pos = 2
+                elif p in row['Mid']:
+                    pos = 3
+                elif p in row['Bot']:
+                    pos = 4
+                elif p in row ['Sup']:
+                    pos = 0
+                else:
+                    pos = -1
+                fantasy_results[name].append((p, 0, pos))
         # now for team stats
         if t in teams:
             t_stats = teams[t]
@@ -83,30 +101,42 @@ if __name__ == '__main__':
 
 
     # now that dict of fantasy players is filled, we determine final scores of each player
+    final_results = dict()
     for f in fantasy_results:
         # final score is determined by taking all player entries (tuples of length 3)
         # and summing the highest score of player entries with unique positions
         final_roster = dict()
+        final_subs = dict()
         final_score = 0
         for p in fantasy_results[f]:
             if type(p) is tuple and len(p) == 3:
-                if p[2] not in final_roster:
+                if p[2] not in final_roster and p[2] > -1:
                     final_roster[p[2]] = (p[0], p[1])
                 elif p[2] in final_roster and p[1] > final_roster[p[2]][1]:
+                    final_subs[p[2]] = final_roster[p[2]]
                     final_roster[p[2]] = (p[0], p[1])
+                else:
+                    final_subs[p[2]] = (p[0], p[1])
         # print(final_roster)
-        fantasy_results[f].append(final_roster)
+        final_results[f] =(final_roster, final_subs)
         # now the last entry in each player entry for fantasy results dict is
         # another dict representing the final displayed roster
 
     # now our fantasy_results dict is loaded with the information we need to make an output spreadsheet
     # just got to remember to access the information correctly
-    # TODO: might want to include a list of non-starting units to fill the sub area
     # to review, let's print
     print("Output after calculations:")
-    for f in fantasy_results:
+    for f in final_results:
         print(f)
-        print(fantasy_results[f])
+        print(final_results[f])
+    # for f in fantasy_results:
+    #     print(f)
+    #     print(fantasy_results[f])
+
+    # we now have all the info required to determine winners
+    # now the issue is formatting the output spreadsheet
+    # trying to copy a hand-formatted style is difficult, but at the very least the output should be pleasing to read
+    output_fantasy_results(final_results, players, teams)
 
 
 
