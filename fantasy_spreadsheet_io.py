@@ -118,7 +118,7 @@ if __name__ == '__main__':
                 else:
                     final_subs[p[2]] = (p[0], p[1])
         # print(final_roster)
-        final_results[f] =(final_roster, final_subs)
+        final_results[f] =(final_roster, final_subs, fantasy_results[f][-2], fantasy_results[f][-1])
         # now the last entry in each player entry for fantasy results dict is
         # another dict representing the final displayed roster
 
