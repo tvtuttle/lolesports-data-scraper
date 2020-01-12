@@ -80,7 +80,7 @@ if __name__ == '__main__':
                     pos = 3
                 elif p in row['Bot']:
                     pos = 4
-                elif p in row ['Sup']:
+                elif p in row['Sup']:
                     pos = 0
                 else:
                     pos = -1
@@ -108,8 +108,12 @@ if __name__ == '__main__':
         final_roster = dict()
         final_subs = dict()
         final_score = 0
+        # everything below here is being changed to accommodate spreadsheet needs
         for p in fantasy_results[f]:
             if type(p) is tuple and len(p) == 3:
+                if p[0] not in players:
+                    players[p[0]] = [0, 0, 0, 0, p[2]] # doing this now because position calculation was earlier
+                    # may want to later change for ease of understanding
                 if p[2] not in final_roster and p[2] > -1:
                     final_roster[p[2]] = (p[0], p[1])
                 elif p[2] in final_roster and p[1] > final_roster[p[2]][1]:
@@ -118,7 +122,13 @@ if __name__ == '__main__':
                 else:
                     final_subs[p[2]] = (p[0], p[1])
         # print(final_roster)
-        final_results[f] =(final_roster, final_subs, fantasy_results[f][-2], fantasy_results[f][-1])
+        # final results format: dict of starters, dict of subs (both keyed by position num), team tuple, color, total score
+        # calculating total score now: starters points + team points
+        for p in final_roster:
+            final_score += final_roster[p][1]
+        final_score += fantasy_results[f][-2][1]
+        final_score = round(final_score, 2)
+        final_results[f] =(final_roster, final_subs, fantasy_results[f][-2], fantasy_results[f][-1], final_score)
         # now the last entry in each player entry for fantasy results dict is
         # another dict representing the final displayed roster
 

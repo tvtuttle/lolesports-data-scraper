@@ -60,6 +60,8 @@ def output_fantasy_results(results, players, teams):
         ws1['E' + str(row)] = players[top][2]
         ws1['F' + str(row)] = players[top][3]
         ws1['G' + str(row)] = results[name][0][1][1]
+        # week total label
+        ws1['L' + str(row)] = "Week Total"
         row += 1
 
         ws1['A' + str(row)] = "Jungle"
@@ -100,22 +102,25 @@ def output_fantasy_results(results, players, teams):
         ws1['E' + str(row)] = players[supp][2]
         ws1['F' + str(row)] = players[supp][3]
         ws1['G' + str(row)] = results[name][0][0][1]
-        row += 2
+        row += 1
+
+        # week totals in this row
+        ws1['L' + str(row)] = results[name][4]
 
         # because sub dict uses weird entries, i think i need to loop through
         # should be inexpensive, just 2 per
-        # TODO: finish this, and figure out how to deal with players without stats (if/else?)
-        # sub_num = 1
-        # for sub in results[name][1]:
-        #     sub_name = sub[0]
-        #     ws1['A' + str(row)] = "Sub-"+str(sub_num)
-        #     ws1['B' + str(row)] = sub_name
-        #     ws1['C' + str(row)] = players[sub_name][0]
-        #     ws1['D' + str(row)] = players[sub_name][1]
-        #     ws1['E' + str(row)] = players[mid][2]
-        #     ws1['F' + str(row)] = players[mid][3]
-        #     ws1['G' + str(row)] = results[name][0][3][1]
-        #     row += 1
+        sub_num = 1
+        for sub in results[name][1]:
+            sub_name = results[name][1][sub][0]
+            ws1['A' + str(row)] = "Sub-"+str(sub_num)
+            ws1['B' + str(row)] = sub_name
+            ws1['C' + str(row)] = players[sub_name][0]
+            ws1['D' + str(row)] = players[sub_name][1]
+            ws1['E' + str(row)] = players[sub_name][2]
+            ws1['F' + str(row)] = players[sub_name][3]
+            ws1['G' + str(row)] = results[name][1][sub][1]
+            row += 1
+            sub_num += 1
 
     wb.save(dest_filename)
 
