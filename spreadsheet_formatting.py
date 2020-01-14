@@ -3,6 +3,20 @@
 
 import openpyxl
 
+def name_colors():
+    # outputs a dict of colors, all hex codes keyed by name
+    # for now, just the one's used last year
+    color = dict()
+    color["Red"] = "FF0000"
+    color["Green"] = "00FF00"
+    color["Blue"] = "0000FF"
+    color["Orange"] = "FF5500"
+    color["Purple"] = "8000FF"
+    color["Black"] = "000000"
+    color["White"] = "FFFFFF"
+
+    return color
+
 def output_fantasy_results(results, players, teams):
     # currently assuming results take format of final_results from fantasy_spreadsheet_io (i.e. a dict of tuples with
     # 2 dicts: starting players and relevant scores, and sub players with relevant scores
@@ -14,12 +28,48 @@ def output_fantasy_results(results, players, teams):
     ws1 = wb.active
     ws1.title = "Test 2019 Week 2 Results"
 
+    # style setup below
+    # colors for styling
+    color = name_colors()
+    # generic fonts and other things that are regularly reused
+    base_font = openpyxl.styles.Font(name='Arial', size=10)
+    bold_font = openpyxl.styles.Font(name='Arial', size=10, bold=True)
+    big_font = openpyxl.styles.Font(name='Arial', size=14, bold=True)
+    name_font = openpyxl.styles.Font(name='Arial', size=14, bold=True, italic=True, color=color["White"])
+    bordered = openpyxl.styles.Border(left=openpyxl.styles.Side(border_style='thin'),
+                                    right=openpyxl.styles.Side(border_style='thin'),
+                                    top=openpyxl.styles.Side(border_style='thin'),
+                                    bottom=openpyxl.styles.Side(border_style='thin'))
+    # cell backgrounds: must be defined in-loop due to reliance on players' chosen colors
+    # cell borders
     # the rows written to are relative to the number of players in the game
     # we can get these from looping through results
-    row = 2
+    row = 1
+    # top row gives the name of the winner in a special message format
+    # to get the winner, compare scores of all members of results, the key with highscore wins
+    # TODO: deal with ties
+    winner = None
+    win_color = list()
+    for name in results:
+        if winner is None or results[name][4] > results[winner][4]:
+            winner = name
+            win_color = results[name][3]
+    # begin by merging top cells
+    ws1.merge_cells('B'+str(row)+':F'+str(row))
+    winner_cell = ws1['B'+str(row)]
+    winner_cell.value = "#" + winner +"Win"
+    # special styling for the header
+    winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=color[win_color])
+
+    row += 1
     for name in results:
         print(name)
-        ws1['A'+str(row)] = name
+        ws1.merge_cells('A' + str(row) + ':L'+str(row))
+        name_cell = ws1['A'+str(row)]
+        name_cell.value = name
+        # special styling for name cell
+        name_cell.font = name_font
+        name_cell.fill = openpyxl.styles.PatternFill(fgColor=color[results[name][3]], fill_type='solid')
         # space after name
         row += 2
         # fill in column headers for team stats
@@ -121,6 +171,7 @@ def output_fantasy_results(results, players, teams):
             ws1['G' + str(row)] = results[name][1][sub][1]
             row += 1
             sub_num += 1
+        row += 1
 
     wb.save(dest_filename)
 
