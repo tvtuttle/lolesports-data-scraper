@@ -19,19 +19,22 @@ from spreadsheet_formatting import output_fantasy_results
 
 # import simple input spreadsheet using pandas and read as dataframe
 if __name__ == '__main__':
-    fantasy_data = pd.read_csv("lcs fantasy test - mock input.csv", header=0)
+    input_filename = "lcs fantasy test - mock input.csv"
+    input_url = "https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards/Week 2"
+    input_week = "Week 2, Summer 2019"
+    fantasy_data = pd.read_csv(input_filename, header=0)
     print(fantasy_data.columns.values)
 
     # get data from scraper
-    [players, teams] = get_scoreboard('https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards/Week 2')
+    [players, teams] = get_scoreboard(input_url)
 
     # review scraper output
-    print("Test: Player stats for Week 2, Summer 2019")
+    print("Player stats for " + input_week)
     for player in players:
         out = "In Position {}, {}: {}/{}/{}, {} cs"
         print(out.format(players[player][4], player, players[player][0], players[player][1], players[player][2], players[player][3]))
 
-    print("Test: Team stats for Week 2, Summer 2019")
+    print("Team stats for " + input_week)
     for team in teams:
         out = "{}: {} wins, {} towers, {} barons, {} dragons, {} rift heralds, {} <30 min wins"
         print(out.format(team, teams[team][0], teams[team][1], teams[team][2], teams[team][3], teams[team][4], teams[team][5]))
@@ -41,10 +44,10 @@ if __name__ == '__main__':
     for row in fantasy_data.iterrows():
         for entry in row[1]['Top':'Sub2']:
             if entry not in players:
-                print(entry + " did not play, and thus is ignored")
+                print(entry + " did not play, and thus has 0 points")
         # do same for teams
         if row[1]['Team'] not in teams:
-            print(row[1]['Team'] + " is not a valid team name, and thus is ignored")
+            print(row[1]['Team'] + " is not a valid team name, and thus has 0 points")
 
     # now, do score calculations for each fantasy player
     # incidentally, each player corresponds to a row

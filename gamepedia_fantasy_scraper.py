@@ -1,5 +1,6 @@
 # current function: scrapes match data from a gamepedia url and formats it into readable data
 # goal function: scrapes match data, then formats data into fantasy excel spreadsheet for upload
+# TODO: all necessary functions implemented, now for ease-of-use io features
 
 import requests
 from bs4 import BeautifulSoup
