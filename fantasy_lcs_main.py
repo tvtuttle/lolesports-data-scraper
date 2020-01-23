@@ -3,6 +3,8 @@
 # will prompt user (in some way) for information, then send that info to spreadsheet io
 # for now, focus on command line input w/ input function
 
+from fantasy_spreadsheet_io import play_fantasy
+
 if __name__ == "__main__":
     # prompt for user input
     league = input("Welcome to Fantasy LCS. Please choose a league (LCS, LEC): ")
@@ -26,8 +28,17 @@ if __name__ == "__main__":
     while int(week) not in range(1, 10):
         week = input("Invalid number. Please select a supported week (1 through 9): ")
 
-    # this requires special seasoning
-    input_path = input("Please enter the location of you fantasy team data: ")
+    # this could be better secured
+    input_path = input("Please enter the location of your fantasy team data: ")
+    output_path = input("Please enter the preferred output location of your fantasy team results: ")
 
-    print(league + " " + year + " " + season + ", Week " + week)
+    title = (league + " " + year + " " + season + ", Week " + week)
+    print(title)
+    # generate url based on input
+    # this is reliant on leaguepedia maintaining consistent url naming guidelines
+    url = "https://lol.gamepedia.com/" + league + "/" + year + "_Season/" + season + "_Season/Scoreboards/"
+    if week != '1':
+        url += "Week " + week
+    print(url)
+    play_fantasy(input_path, url, title, output_path)
 

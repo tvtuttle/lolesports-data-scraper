@@ -17,16 +17,17 @@ def name_colors():
 
     return color
 
-def output_fantasy_results(results, players, teams):
+
+def output_fantasy_results(dest_filename, title, results, players, teams):
     # currently assuming results take format of final_results from fantasy_spreadsheet_io (i.e. a dict of tuples with
     # 2 dicts: starting players and relevant scores, and sub players with relevant scores
     # if we want to fill the sheet with all the stats used to find scores, we can expand that functionality later
     # additionally assuming players and teams take the form of scraped player and team data
     wb = openpyxl.Workbook()
-    dest_filename = 'fantasy_book.xlsx'
+    # dest_filename = 'fantasy_book.xlsx'
 
     ws1 = wb.active
-    ws1.title = "Test 2019 Week 2 Results"
+    ws1.title = title
 
     # style setup below
     # colors for styling
