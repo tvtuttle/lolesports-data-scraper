@@ -6,3 +6,5 @@ Currently, the program can be used by running fantasy_lcs_main.py using python. 
 The program requires a specially formatted csv containing fantasy team details as input, and will output the results to a specially-formated xlsx file with a name specified by user input.
 
 This program was developed for use in Python 3.8.1, and requires packages that can be installed using pip. All necessary packages and their required versions can be found in the requirements.txt file.
+
+The .idea folder in this repository contains setting information specific to the PyCharm IDE, where this project was created. AS FAR AS I KNOW, its presence should not affect the program, which should be runnable by any Python compiler or environment (assuming necessary packages are installed).
