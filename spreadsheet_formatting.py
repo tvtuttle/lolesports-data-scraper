@@ -14,7 +14,7 @@ def name_colors():
     color["Purple"] = "8000FF"
     color["Black"] = "000000"
     color["White"] = "FFFFFF"
-    color["Yellow"] = "FFFF00"
+    color["Yellow"] = "CCCC00"
 
     return color
 

@@ -10,7 +10,7 @@
 # (i.e. no first blood or elder dragon)
 
 # stretch goals (to do later):
-#   add case flexibility to player and team names
+#   add case flexibility to player and team names (esp. player names)
 
 import pandas as pd
 from gamepedia_fantasy_scraper import get_scoreboard

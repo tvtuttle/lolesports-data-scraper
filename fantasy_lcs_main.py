@@ -14,7 +14,7 @@ if __name__ == "__main__":
         league = league.upper()
 
     year = input("Please choose a year (ex. 2019): ")
-    while year not in ['2019', '2020']:
+    while year not in ['2018', '2019', '2020', '2021']: #TODO make this and other checks more robust
         year = input("Invalid year. Please select a supported year (2019, 2020): ")
 
     season = input("Please choose a season (Spring, Summer): ")
