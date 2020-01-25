@@ -36,9 +36,9 @@ if __name__ == "__main__":
     print(title)
     # generate url based on input
     # this is reliant on leaguepedia maintaining consistent url naming guidelines
-    url = "https://lol.gamepedia.com/" + league + "/" + year + "_Season/" + season + "_Season/Scoreboards/"
+    url = "https://lol.gamepedia.com/" + league + "/" + year + "_Season/" + season + "_Season/Scoreboards"
     if week != '1':
-        url += "Week " + week
+        url += "/Week " + week
     print(url)
     play_fantasy(input_path, url, title, output_path)
 
