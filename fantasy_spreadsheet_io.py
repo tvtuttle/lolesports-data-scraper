@@ -109,9 +109,11 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
         # final score is determined by taking all player entries (tuples of length 3)
         # and summing the highest score of player entries with unique positions
         final_roster = dict()
-        final_subs = dict()
+        # final_subs = dict()
+        final_subs = list()
         final_score = 0
         # everything below here is being changed to accommodate spreadsheet needs
+        # todo: final_subs no longer dict, now list of tuples
         for p in fantasy_results[f]:
             if type(p) is tuple and len(p) == 3:
                 if p[0] not in players:
@@ -120,10 +122,12 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
                 if p[2] not in final_roster and p[2] > -1:
                     final_roster[p[2]] = (p[0], p[1])
                 elif p[2] in final_roster and p[1] > final_roster[p[2]][1]:
-                    final_subs[p[2]] = final_roster[p[2]]
+                    # final_subs[p[2]] = final_roster[p[2]]
+                    final_subs.append((final_roster[p[2]][0], final_roster[p[2]][1], p[2]))
                     final_roster[p[2]] = (p[0], p[1])
                 else:
-                    final_subs[p[2]] = (p[0], p[1])
+                    # final_subs[p[2]] = (p[0], p[1])
+                    final_subs.append((p[0], p[1], p[2]))
         # print(final_roster)
         # final results format: dict of starters, dict of subs (both keyed by position num), team tuple, color, total score
         # calculating total score now: starters points + team points

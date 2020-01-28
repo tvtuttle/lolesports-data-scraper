@@ -274,16 +274,19 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
 
         # because sub dict uses weird entries, i think i need to loop through
         # should be inexpensive, just 2 per
+        #todo: alter due to change from sub dict to sub list of tuples
         sub_num = 1
         for sub in results[name][1]:
-            sub_name = results[name][1][sub][0]
+            # sub_name = results[name][1][sub][0]
+            sub_name = sub[0]
             ws1['A' + str(row)] = "Sub-"+str(sub_num)
             ws1['B' + str(row)] = sub_name
             ws1['C' + str(row)] = players[sub_name][0]
             ws1['D' + str(row)] = players[sub_name][1]
             ws1['E' + str(row)] = players[sub_name][2]
             ws1['F' + str(row)] = players[sub_name][3]
-            ws1['G' + str(row)] = results[name][1][sub][1]
+            # ws1['G' + str(row)] = results[name][1][sub][1]
+            ws1['G' + str(row)] = sub[1]
             # apply formatting
             ws1['A' + str(row)].style = 'bold_style'
             ws1['B' + str(row)].style = 'base_style'
