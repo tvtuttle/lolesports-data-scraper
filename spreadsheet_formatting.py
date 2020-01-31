@@ -102,7 +102,7 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
 
     row += 1
     for name in results:
-        print(name)
+        # print(name)
         ws1.merge_cells('A' + str(row) + ':H'+str(row))
         name_cell = ws1['A'+str(row)]
         name_cell.value = name

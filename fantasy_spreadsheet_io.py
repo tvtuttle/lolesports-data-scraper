@@ -21,23 +21,23 @@ from spreadsheet_formatting import output_fantasy_results
 # put the main in a function with input from fantasy-lcs-main
 def play_fantasy(input_filename, input_url, input_week, output_filename):
     fantasy_data = pd.read_csv(input_filename, header=0)
-    print(fantasy_data.columns.values)
+    # print(fantasy_data.columns.values)
 
     # get data from scraper
     [players, teams] = get_scoreboard(input_url)
 
     # review scraper output
-    print("Player stats for " + input_week)
-    for player in players:
-        out = "In Position {}, {}: {}/{}/{}, {} cs"
-        print(out.format(players[player][4], player, players[player][0], players[player][1], players[player][2],
-                         players[player][3]))
-
-    print("Team stats for " + input_week)
-    for team in teams:
-        out = "{}: {} wins, {} towers, {} barons, {} dragons, {} rift heralds, {} <30 min wins"
-        print(out.format(team, teams[team][0], teams[team][1], teams[team][2], teams[team][3], teams[team][4],
-                         teams[team][5]))
+    # print("Player stats for " + input_week)
+    # for player in players:
+    #     out = "In Position {}, {}: {}/{}/{}, {} cs"
+    #     print(out.format(players[player][4], player, players[player][0], players[player][1], players[player][2],
+    #                      players[player][3]))
+    #
+    # print("Team stats for " + input_week)
+    # for team in teams:
+    #     out = "{}: {} wins, {} towers, {} barons, {} dragons, {} rift heralds, {} <30 min wins"
+    #     print(out.format(team, teams[team][0], teams[team][1], teams[team][2], teams[team][3], teams[team][4],
+    #                      teams[team][5]))
 
     # check fantasy_data player and team names against keys in players and teams
     print("Checking players...")
@@ -60,7 +60,7 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
         color = row['Color']
         t = row['Team']
         total_score = 0
-        print(name)
+        # print(name)
         fantasy_results[name] = list()
         for p in row['Top':'Sub2']:
             if p in players:
@@ -91,17 +91,21 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
         # now for team stats
         if t in teams:
             t_stats = teams[t]
-            print(t_stats)
+            # print(t_stats)
             # team scores are calculated as follows:
             # 2*wins + 1*towers + 2*barons + 1*dragons + 2*heralds + 2* sub 30 win
             score = round(2 * t_stats[0] + t_stats[1] + 2 * t_stats[2] + t_stats[3] + 2 * t_stats[4] + 2 * t_stats[5],
                           2)
             fantasy_results[name].append((t, score))
         # we'll include color as the final field
+        else:
+            # if t not in teams, all zeros
+            teams[t] = [0, 0, 0, 0, 0, 0]
+            fantasy_results[name].append((t, 0))
         fantasy_results[name].append(color)
 
-    for name in fantasy_results:
-        print(name + ": " + str(fantasy_results[name]))
+    # for name in fantasy_results:
+    #     print(name + ": " + str(fantasy_results[name]))
 
     # now that dict of fantasy players is filled, we determine final scores of each player
     final_results = dict()
@@ -142,10 +146,10 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
     # now our fantasy_results dict is loaded with the information we need to make an output spreadsheet
     # just got to remember to access the information correctly
     # to review, let's print
-    print("Output after calculations:")
-    for f in final_results:
-        print(f)
-        print(final_results[f])
+    # print("Output after calculations:")
+    # for f in final_results:
+    #     print(f)
+    #     print(final_results[f])
     # for f in fantasy_results:
     #     print(f)
     #     print(fantasy_results[f])
@@ -234,6 +238,9 @@ if __name__ == '__main__':
             score = round(2*t_stats[0] + t_stats[1] + 2*t_stats[2] + t_stats[3] + 2*t_stats[4] + 2*t_stats[5], 2)
             fantasy_results[name].append((t, score))
         # we'll include color as the final field
+        else:
+            # if t not in teams, all zeros
+            fantasy_results[name].append((t, 0))
         fantasy_results[name].append(color)
 
     for name in fantasy_results:

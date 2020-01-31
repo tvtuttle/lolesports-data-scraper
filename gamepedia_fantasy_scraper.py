@@ -39,6 +39,7 @@ def good_response(resp):
 # with url as input
 def get_scoreboard(url):
     raw_html = get_html(url)
+    print("Checking for good response...")
     print(raw_html is not None)  # check for good response
 
     html = BeautifulSoup(raw_html, 'html.parser')

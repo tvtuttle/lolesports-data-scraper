@@ -33,12 +33,13 @@ if __name__ == "__main__":
     output_path = input("Please enter the preferred output location of your fantasy team results: ")
 
     title = (league + " " + year + " " + season + ", Week " + week)
-    print(title)
+    # print(title)
     # generate url based on input
     # this is reliant on leaguepedia maintaining consistent url naming guidelines
     url = "https://lol.gamepedia.com/" + league + "/" + year + "_Season/" + season + "_Season/Scoreboards"
     if week != '1':
         url += "/Week " + week
-    print(url)
+    print("Scoreboard URL: " + url)
     play_fantasy(input_path, url, title, output_path)
+    print("Done!")
 
