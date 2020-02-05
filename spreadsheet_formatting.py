@@ -2,6 +2,8 @@
 # isolated from other code files because this could get messy
 
 import openpyxl
+from colour import Color
+
 
 def name_colors():
     # outputs a dict of colors, all hex codes keyed by name
@@ -96,7 +98,7 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
     # special styling for the header
     winner_cell.alignment = openpyxl.styles.Alignment(horizontal = "center")
     if (len(win_color) == 1):
-        winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=color[win_color[0]])
+        winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=Color(win_color[0]).get_hex_l()[1:])
     else:
         winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=color["Black"])
 
@@ -108,14 +110,14 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         name_cell.value = name
         # special styling for name cell
         name_cell.style = name_style
-        name_cell.fill = openpyxl.styles.PatternFill(fgColor=color[results[name][3]], fill_type='solid')
+        name_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name][3]).get_hex_l()[1:], fill_type='solid')
         # after name, 2 cells merged to present score
         ws1.merge_cells('I'+str(row) + ':J' + str(row))
         score_cell = ws1['I' + str(row)]
         score_cell.value = results[name][4]
         score_cell.style = name_style
         score_cell.alignment = openpyxl.styles.Alignment(horizontal='right')
-        score_cell.fill = openpyxl.styles.PatternFill(fgColor=color[results[name][3]], fill_type='solid')
+        score_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name][3]).get_hex_l()[1:], fill_type='solid')
         # space after name
         row += 2
         # fill in column headers for team stats
