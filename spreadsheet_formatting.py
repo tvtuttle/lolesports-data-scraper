@@ -59,7 +59,7 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
     tstat_style.alignment = openpyxl.styles.Alignment(horizontal='right')
 
     name_style = openpyxl.styles.NamedStyle(name="name_style")
-    name_style.font = openpyxl.styles.Font(name='Arial', size=14, bold=True, italic=True, color=color["White"])
+    name_style.font = openpyxl.styles.Font(name='Arial', size=14, bold=True, italic=True, color=Color("White").get_hex_l()[1:])
     # cell backgrounds: must be defined in-loop due to reliance on players' chosen colors
 
     # column formatting so that the sheet looks nice
@@ -100,7 +100,7 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
     if (len(win_color) == 1):
         winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=Color(win_color[0]).get_hex_l()[1:])
     else:
-        winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=color["Black"])
+        winner_cell.font = openpyxl.styles.Font(name='Arial', size=24, bold=True, italic=True, color=Color("Black").get_hex_l()[1:])
 
     row += 1
     for name in results:
@@ -119,7 +119,12 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         score_cell.alignment = openpyxl.styles.Alignment(horizontal='right')
         score_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name][3]).get_hex_l()[1:], fill_type='solid')
         # space after name
-        row += 2
+        row += 1
+        # light_color = Color(results[name][3])
+        # light_color.set_luminance(0.90) # this section will be a lighter shade of the primary color
+        # for col in 'ABCDEFGHIJ':
+        #     ws1[col+str(row)].fill = openpyxl.styles.PatternFill(fgColor=light_color.get_hex_l()[1:], fill_type='solid')
+        row += 1
         # fill in column headers for team stats
         ws1['C'+str(row)] = "Wins"
         ws1['D'+str(row)] = "Towers"
@@ -137,6 +142,9 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         ws1['H' + str(row)].style = 'bold_style'
         ws1['J' + str(row)].style = 'bold_style'
 
+        # apply background light color
+        # for col in 'ABCDEFGHIJ':
+        #     ws1[col+str(row)].fill = openpyxl.styles.PatternFill(fgColor=light_color.get_hex_l()[1:], fill_type='solid')
         row += 1
 
         ws1['A' + str(row)] = "Team"
@@ -160,6 +168,9 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         ws1['G' + str(row)].style = 'tstat_style'
         ws1['H' + str(row)].style = 'tstat_style'
         ws1['J' + str(row)].style = 'tstat_style'
+        # apply background color
+        # for col in 'ABCDEFGHIJ':
+        #     ws1[col+str(row)].fill = openpyxl.styles.PatternFill(fgColor=light_color.get_hex_l()[1:], fill_type='solid')
         row += 1
 
         # player stat headers
