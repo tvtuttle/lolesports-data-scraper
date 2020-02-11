@@ -4,6 +4,17 @@
 # for now, focus on command line input w/ input function
 
 from fantasy_spreadsheet_io import play_fantasy
+import datetime
+
+# quick function for date check
+# sees if a string can be cast to an int
+def is_int(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 
 if __name__ == "__main__":
     # prompt for user input
@@ -14,8 +25,13 @@ if __name__ == "__main__":
         league = league.upper()
 
     year = input("Please choose a year (ex. 2019): ")
-    while year not in ['2018', '2019', '2020', '2021']: #TODO make this and other checks more robust
-        year = input("Invalid year. Please select a supported year (2019, 2020): ")
+    # check for valid year -- for now, all years from 2019 on are valid (due to LEC rebrand that year)
+    now_date = datetime.datetime.now()
+    now_year = now_date.year # type is int
+    while not is_int(year) or int(year) < 2019 or int(year) > now_year:
+        year = input("Invalid year. Please select a supported year (2018 - Present): ")
+    # while year not in ['2018', '2019', '2020', '2021']: #TODO make this and other checks more robust
+    #     year = input("Invalid year. Please select a supported year (2019, 2020): ")
 
     season = input("Please choose a season (Spring, Summer): ")
     season = season.lower()

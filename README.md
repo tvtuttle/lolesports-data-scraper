@@ -10,7 +10,7 @@ This program was developed for use in Python 3.8.1, and requires packages that c
 The .idea folder in this repository contains setting information specific to the PyCharm IDE, where this project was created. AS FAR AS I KNOW, its presence should not affect the program, which should be runnable by any Python compiler or environment (assuming necessary packages are installed).
 
 CURRENTLY-KNOWN ISSUES/LIMITATIONS
-The program does not allow the user to access stats from outside the 2019 and 2020 seasons. (Of course, attempting to access stats from seasons and weeks that have not yet occurred will result in an error.)
+The program does not allow the user to access stats from before the 2019 LCS and LEC seasons. (Of course, attempting to access stats from seasons and weeks that have not yet occurred will result in an error.)
 When considering the input csv, player names are case-sensitive: as such, all characters in the name must match the player's corresponding designation in the Leaguepedia wiki for their stats to be found and calculated. In addition, only certain colors are currently supported as entries in the color field; eventually, better support for output color customization is planned.
 
 The input csv should take the following format (including a row with column labels): Name, Color, Team, Top, Jungle, Mid, Bot, Sup, Sub1, Sub2
