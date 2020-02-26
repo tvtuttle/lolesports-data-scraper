@@ -21,7 +21,7 @@ def name_colors():
     return color
 
 
-def output_fantasy_results(dest_filename, title, results, players, teams):
+def output_fantasy_results(dest_filename, title, results):
     # currently assuming results take format of final_results from fantasy_spreadsheet_io (i.e. a dict of tuples with
     # 2 dicts: starting players and relevant scores, and sub players with relevant scores
     # if we want to fill the sheet with all the stats used to find scores, we can expand that functionality later
@@ -63,6 +63,7 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
     # cell backgrounds: must be defined in-loop due to reliance on players' chosen colors
 
     # column formatting so that the sheet looks nice
+    ws1.row_dimensions[1].height = 30
     ws1.column_dimensions['A'].width = 15
     ws1.column_dimensions['B'].width = 20
     ws1.column_dimensions['C'].width = 15
@@ -81,13 +82,20 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
     # to get the winner, compare scores of all members of results, the key with highscore wins
     winner = list()
     win_color = list()
+    # for name in results:
+    #     if len(winner) == 0 or results[name][4] > results[winner[0]][4]:
+    #         winner = [name]
+    #         win_color = [results[name][3]]
+    #     elif results[name][4] == results[winner[0]][4]:
+    #         winner.append(name)
+    #         win_color.append(results[name][3])
     for name in results:
-        if len(winner) == 0 or results[name][4] > results[winner[0]][4]:
+        if len(winner) == 0 or results[name].get_score() > results[winner[0]].get_score():
             winner = [name]
-            win_color = [results[name][3]]
-        elif results[name][4] == results[winner[0]][4]:
+            win_color = [results[name].color]
+        elif results[name].get_score() == results[winner[0]].get_score():
             winner.append(name)
-            win_color.append(results[name][3])
+            win_color.append(results[name].color)
     # begin by merging top cells
     ws1.merge_cells('B'+str(row)+':F'+str(row))
     winner_cell = ws1['B'+str(row)]
@@ -110,14 +118,15 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         name_cell.value = name
         # special styling for name cell
         name_cell.style = name_style
-        name_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name][3]).get_hex_l()[1:], fill_type='solid')
+        name_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name].color).get_hex_l()[1:], fill_type='solid')
         # after name, 2 cells merged to present score
         ws1.merge_cells('I'+str(row) + ':J' + str(row))
         score_cell = ws1['I' + str(row)]
-        score_cell.value = results[name][4]
+        # score_cell.value = results[name][4]
+        score_cell.value = results[name].get_score()
         score_cell.style = name_style
         score_cell.alignment = openpyxl.styles.Alignment(horizontal='right')
-        score_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name][3]).get_hex_l()[1:], fill_type='solid')
+        score_cell.fill = openpyxl.styles.PatternFill(fgColor=Color(results[name].color).get_hex_l()[1:], fill_type='solid')
         # space after name
         row += 1
         # light_color = Color(results[name][3])
@@ -148,16 +157,25 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         row += 1
 
         ws1['A' + str(row)] = "Team"
-        team = results[name][2][0]
-        ws1['B' + str(row)] = team
+        # team = results[name][2][0]
+        team = results[name].team
+        # ws1['B' + str(row)] = team
+        ws1['B' + str(row)] = team.name
         # now, fill in team stats from teams and final score from results
-        ws1['C'+str(row)] = teams[team][0]
-        ws1['D' + str(row)] = teams[team][1]
-        ws1['E' + str(row)] = teams[team][2]
-        ws1['F' + str(row)] = teams[team][3]
-        ws1['G' + str(row)] = teams[team][4]
-        ws1['H' + str(row)] = teams[team][5]
-        ws1['J' + str(row)] = results[name][2][1]
+        # ws1['C'+str(row)] = teams[team][0]
+        # ws1['D' + str(row)] = teams[team][1]
+        # ws1['E' + str(row)] = teams[team][2]
+        # ws1['F' + str(row)] = teams[team][3]
+        # ws1['G' + str(row)] = teams[team][4]
+        # ws1['H' + str(row)] = teams[team][5]
+        # ws1['J' + str(row)] = results[name][2][1]
+        ws1['C' + str(row)] = team.wins
+        ws1['D' + str(row)] = team.towers
+        ws1['E' + str(row)] = team.barons
+        ws1['F' + str(row)] = team.dragons
+        ws1['G' + str(row)] = team.heralds
+        ws1['H' + str(row)] = team.fastwins
+        ws1['J' + str(row)] = team.get_score()
         # apply formatting to each cell
         ws1['A' + str(row)].style = 'bold_style'
         ws1['B' + str(row)].style = base_style
@@ -191,13 +209,20 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         # player entries for each position
         # individual stats from players, name and score from results
         ws1['A' + str(row)] = "Top"
-        top = results[name][0][1][0]
-        ws1['B' + str(row)] = top
-        ws1['C' + str(row)] = players[top][0]
-        ws1['D' + str(row)] = players[top][1]
-        ws1['E' + str(row)] = players[top][2]
-        ws1['F' + str(row)] = players[top][3]
-        ws1['G' + str(row)] = results[name][0][1][1]
+        # top = results[name][0][1][0]
+        # ws1['B' + str(row)] = top
+        # ws1['C' + str(row)] = players[top][0]
+        # ws1['D' + str(row)] = players[top][1]
+        # ws1['E' + str(row)] = players[top][2]
+        # ws1['F' + str(row)] = players[top][3]
+        # ws1['G' + str(row)] = results[name][0][1][1]
+        top = results[name].starters[1]
+        ws1['B' + str(row)] = top.name
+        ws1['C' + str(row)] = top.k
+        ws1['D' + str(row)] = top.d
+        ws1['E' + str(row)] = top.a
+        ws1['F' + str(row)] = top.cs
+        ws1['G' + str(row)] = top.get_score()
         # apply formatting
         ws1['A'+str(row)].style = 'bold_style'
         ws1['B' + str(row)].style = 'base_style'
@@ -210,13 +235,13 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         row += 1
 
         ws1['A' + str(row)] = "Jungle"
-        jung = results[name][0][2][0]
-        ws1['B' + str(row)] = jung
-        ws1['C' + str(row)] = players[jung][0]
-        ws1['D' + str(row)] = players[jung][1]
-        ws1['E' + str(row)] = players[jung][2]
-        ws1['F' + str(row)] = players[jung][3]
-        ws1['G' + str(row)] = results[name][0][2][1]
+        jung = results[name].starters[2]
+        ws1['B' + str(row)] = jung.name
+        ws1['C' + str(row)] = jung.k
+        ws1['D' + str(row)] = jung.d
+        ws1['E' + str(row)] = jung.a
+        ws1['F' + str(row)] = jung.cs
+        ws1['G' + str(row)] = jung.get_score()
         # apply formatting
         ws1['A' + str(row)].style = 'bold_style'
         ws1['B' + str(row)].style = 'base_style'
@@ -229,13 +254,13 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         row += 1
 
         ws1['A' + str(row)] = "Mid"
-        mid = results[name][0][3][0]
-        ws1['B' + str(row)] = mid
-        ws1['C' + str(row)] = players[mid][0]
-        ws1['D' + str(row)] = players[mid][1]
-        ws1['E' + str(row)] = players[mid][2]
-        ws1['F' + str(row)] = players[mid][3]
-        ws1['G' + str(row)] = results[name][0][3][1]
+        mid = results[name].starters[3]
+        ws1['B' + str(row)] = mid.name
+        ws1['C' + str(row)] = mid.k
+        ws1['D' + str(row)] = mid.d
+        ws1['E' + str(row)] = mid.a
+        ws1['F' + str(row)] = mid.cs
+        ws1['G' + str(row)] = mid.get_score()
         # apply formatting
         ws1['A' + str(row)].style = 'bold_style'
         ws1['B' + str(row)].style = 'base_style'
@@ -248,13 +273,13 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         row += 1
 
         ws1['A' + str(row)] = "Bot"
-        bot = results[name][0][4][0]
-        ws1['B' + str(row)] = bot
-        ws1['C' + str(row)] = players[bot][0]
-        ws1['D' + str(row)] = players[bot][1]
-        ws1['E' + str(row)] = players[bot][2]
-        ws1['F' + str(row)] = players[bot][3]
-        ws1['G' + str(row)] = results[name][0][4][1]
+        bot = results[name].starters[4]
+        ws1['B' + str(row)] = bot.name
+        ws1['C' + str(row)] = bot.k
+        ws1['D' + str(row)] = bot.d
+        ws1['E' + str(row)] = bot.a
+        ws1['F' + str(row)] = bot.cs
+        ws1['G' + str(row)] = bot.get_score()
         # apply formatting
         ws1['A' + str(row)].style = 'bold_style'
         ws1['B' + str(row)].style = 'base_style'
@@ -267,13 +292,13 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         row += 1
 
         ws1['A' + str(row)] = "Support"
-        supp = results[name][0][0][0]
-        ws1['B' + str(row)] = supp
-        ws1['C' + str(row)] = players[supp][0]
-        ws1['D' + str(row)] = players[supp][1]
-        ws1['E' + str(row)] = players[supp][2]
-        ws1['F' + str(row)] = players[supp][3]
-        ws1['G' + str(row)] = results[name][0][0][1]
+        supp = results[name].starters[0]
+        ws1['B' + str(row)] = supp.name
+        ws1['C' + str(row)] = supp.k
+        ws1['D' + str(row)] = supp.d
+        ws1['E' + str(row)] = supp.a
+        ws1['F' + str(row)] = supp.cs
+        ws1['G' + str(row)] = supp.get_score()
         # apply formatting
         ws1['A' + str(row)].style = 'bold_style'
         ws1['B' + str(row)].style = 'base_style'
@@ -289,17 +314,17 @@ def output_fantasy_results(dest_filename, title, results, players, teams):
         # should be inexpensive, just 2 per
         #todo: alter due to change from sub dict to sub list of tuples
         sub_num = 1
-        for sub in results[name][1]:
+        for sub in results[name].subs:
             # sub_name = results[name][1][sub][0]
-            sub_name = sub[0]
+            # sub_name = sub[0]
             ws1['A' + str(row)] = "Sub-"+str(sub_num)
-            ws1['B' + str(row)] = sub_name
-            ws1['C' + str(row)] = players[sub_name][0]
-            ws1['D' + str(row)] = players[sub_name][1]
-            ws1['E' + str(row)] = players[sub_name][2]
-            ws1['F' + str(row)] = players[sub_name][3]
+            ws1['B' + str(row)] = sub.name
+            ws1['C' + str(row)] = sub.k
+            ws1['D' + str(row)] = sub.d
+            ws1['E' + str(row)] = sub.a
+            ws1['F' + str(row)] = sub.cs
             # ws1['G' + str(row)] = results[name][1][sub][1]
-            ws1['G' + str(row)] = sub[1]
+            ws1['G' + str(row)] = sub.get_score()
             # apply formatting
             ws1['A' + str(row)].style = 'bold_style'
             ws1['B' + str(row)].style = 'base_style'

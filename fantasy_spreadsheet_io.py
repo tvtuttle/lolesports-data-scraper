@@ -16,6 +16,7 @@ import pandas as pd
 from gamepedia_fantasy_scraper import get_scoreboard
 import numpy as np
 from spreadsheet_formatting import output_fantasy_results
+from player import FanTeam, LolPlayer, LolTeam
 
 
 # put the main in a function with input from fantasy-lcs-main
@@ -52,6 +53,7 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
     # now, do score calculations for each fantasy player
     # incidentally, each player corresponds to a row
     # we will store calculations once again in a dict of stat lists, keyed by fantasy player name
+    # once again, replacing lists with objects
     print("Calculating scores...")
     fantasy_results = dict()
     for row in fantasy_data.iterrows():
@@ -61,16 +63,18 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
         t = row['Team']
         total_score = 0
         # print(name)
-        fantasy_results[name] = list()
+        # fantasy_results[name] = list()
+        fantasy_results[name] = FanTeam(name, color)
         for p in row['Top':'Sub2']:
             if p in players:
-                p_stats = players[p]
+                # p_stats = players[p]
                 # print(p_stats)
                 # scores are calculated as follows:
                 # 2*kills + 1.5*assists + 0.01*cs - 0.5*deaths
-                score = round(2 * p_stats[0] - 0.5 * p_stats[1] + 1.5 * p_stats[2] + 0.01 * p_stats[3], 2)
+                # score = round(2 * p_stats[0] - 0.5 * p_stats[1] + 1.5 * p_stats[2] + 0.01 * p_stats[3], 2)
                 # print(score)
-                fantasy_results[name].append((p, score, p_stats[4]))
+                # fantasy_results[name].append((p, score, p_stats[4]))
+                fantasy_results[name].add_player(players[p])
             else:
                 # get the row the player is in from team input (not scraper)
                 # hackjob: just loop through all potential position columns and check presence
@@ -87,61 +91,68 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
                     pos = 0
                 else:
                     pos = -1
-                fantasy_results[name].append((p, 0, pos))
+                # fantasy_results[name].append((p, 0, pos))
+                fantasy_results[name].add_player(LolPlayer(p, 0, 0, 0, 0, pos))
         # now for team stats
         if t in teams:
-            t_stats = teams[t]
+            # t_stats = teams[t]
             # print(t_stats)
             # team scores are calculated as follows:
             # 2*wins + 1*towers + 2*barons + 1*dragons + 2*heralds + 2* sub 30 win
-            score = round(2 * t_stats[0] + t_stats[1] + 2 * t_stats[2] + t_stats[3] + 2 * t_stats[4] + 2 * t_stats[5],
-                          2)
-            fantasy_results[name].append((t, score))
+            # score = round(2 * t_stats[0] + t_stats[1] + 2 * t_stats[2] + t_stats[3] + 2 * t_stats[4] + 2 * t_stats[5],
+            #               2)
+            # fantasy_results[name].append((t, score))
+            fantasy_results[name].team = teams[t]
         # we'll include color as the final field
         else:
             # if t not in teams, all zeros
-            teams[t] = [0, 0, 0, 0, 0, 0]
-            fantasy_results[name].append((t, 0))
-        fantasy_results[name].append(color)
+            # teams[t] = [0, 0, 0, 0, 0, 0]
+            # fantasy_results[name].append((t, 0))
+            fantasy_results[name].team = LolTeam(t, 0, 0, 0, 0, 0, 0)
+        # fantasy_results[name].append(color)
 
     # for name in fantasy_results:
     #     print(name + ": " + str(fantasy_results[name]))
 
     # now that dict of fantasy players is filled, we determine final scores of each player
-    final_results = dict()
-    for f in fantasy_results:
-        # final score is determined by taking all player entries (tuples of length 3)
-        # and summing the highest score of player entries with unique positions
-        final_roster = dict()
-        # final_subs = dict()
-        final_subs = list()
-        final_score = 0
-        # everything below here is being changed to accommodate spreadsheet needs
-        # todo: final_subs no longer dict, now list of tuples
-        for p in fantasy_results[f]:
-            if type(p) is tuple and len(p) == 3:
-                if p[0] not in players:
-                    players[p[0]] = [0, 0, 0, 0, p[2]]  # doing this now because position calculation was earlier
-                    # may want to later change for ease of understanding
-                if p[2] not in final_roster and p[2] > -1:
-                    final_roster[p[2]] = (p[0], p[1])
-                elif p[2] in final_roster and p[1] > final_roster[p[2]][1]:
-                    # final_subs[p[2]] = final_roster[p[2]]
-                    final_subs.append((final_roster[p[2]][0], final_roster[p[2]][1], p[2]))
-                    final_roster[p[2]] = (p[0], p[1])
-                else:
-                    # final_subs[p[2]] = (p[0], p[1])
-                    final_subs.append((p[0], p[1], p[2]))
-        # print(final_roster)
-        # final results format: dict of starters, dict of subs (both keyed by position num), team tuple, color, total score
-        # calculating total score now: starters points + team points
-        for p in final_roster:
-            final_score += final_roster[p][1]
-        final_score += fantasy_results[f][-2][1]
-        final_score = round(final_score, 2)
-        final_results[f] = (final_roster, final_subs, fantasy_results[f][-2], fantasy_results[f][-1], final_score)
+    # final_results = dict()
+    # for f in fantasy_results:
+    #     # final score is determined by taking all player entries (tuples of length 3)
+    #     # and summing the highest score of player entries with unique positions
+    #     final_roster = dict()
+    #     # final_subs = dict()
+    #     final_subs = list()
+    #     final_score = 0
+    #     # everything below here is being changed to accommodate spreadsheet needs
+    #     # todo: final_subs no longer dict, now list of tuples
+    #     for p in fantasy_results[f]:
+    #         if type(p) is tuple and len(p) == 3:
+    #             if p[0] not in players:
+    #                 players[p[0]] = [0, 0, 0, 0, p[2]]  # doing this now because position calculation was earlier
+    #                 # may want to later change for ease of understanding
+    #             if p[2] not in final_roster and p[2] > -1:
+    #                 final_roster[p[2]] = (p[0], p[1])
+    #             elif p[2] in final_roster and p[1] > final_roster[p[2]][1]:
+    #                 # final_subs[p[2]] = final_roster[p[2]]
+    #                 final_subs.append((final_roster[p[2]][0], final_roster[p[2]][1], p[2]))
+    #                 final_roster[p[2]] = (p[0], p[1])
+    #             else:
+    #                 # final_subs[p[2]] = (p[0], p[1])
+    #                 final_subs.append((p[0], p[1], p[2]))
+    #     # print(final_roster)
+    #     # final results format: dict of starters, dict of subs (both keyed by position num), team tuple, color, total score
+    #     # calculating total score now: starters points + team points
+    #     for p in final_roster:
+    #         final_score += final_roster[p][1]
+    #     final_score += fantasy_results[f][-2][1]
+    #     final_score = round(final_score, 2)
+    #     final_results[f] = (final_roster, final_subs, fantasy_results[f][-2], fantasy_results[f][-1], final_score)
         # now the last entry in each player entry for fantasy results dict is
         # another dict representing the final displayed roster
+
+    # new version using objects
+    for name in fantasy_results:
+        fantasy_results[name].manage_roster()
 
     # now our fantasy_results dict is loaded with the information we need to make an output spreadsheet
     # just got to remember to access the information correctly
@@ -157,8 +168,10 @@ def play_fantasy(input_filename, input_url, input_week, output_filename):
     # we now have all the info required to determine winners
     # now the issue is formatting the output spreadsheet
     # trying to copy a hand-formatted style is difficult, but at the very least the output should be pleasing to read
-    output_fantasy_results(output_filename, input_week, final_results, players, teams)
+    # output_fantasy_results(output_filename, input_week, final_results, players, teams)
+    output_fantasy_results(output_filename, input_week, fantasy_results)
 # import simple input spreadsheet using pandas and read as dataframe
+# note: this code is no longer useful; main file is fantasy_lcs_main
 if __name__ == '__main__':
     input_filename = "lcs fantasy test - mock input.csv"
     input_url = "https://lol.gamepedia.com/LCS/2019_Season/Summer_Season/Scoreboards/Week 2"

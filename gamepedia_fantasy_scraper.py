@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from contextlib import closing
 import re
+from player import LolPlayer, LolTeam
 
 # create function to download webpage data from internet
 # based on tutorial code from https://realpython.com/python-web-scraping-practical-introduction/
@@ -70,14 +71,21 @@ def get_scoreboard(url):
         a = int(kda[2])
 
         # organize name and stats together into a list (not tuple, we need to change values), check and insert into dict
+        # now put name and stats into lolplayer object instead of list
         if name not in players:
-            players[name] = [k, d, a, cs, player_pos]
+            # players[name] = [k, d, a, cs, player_pos]
+            players[name] = LolPlayer(name, k, d, a, cs, player_pos)
         else:
             # add int values to existing name entry
-            players[name][0] += k
-            players[name][1] += d
-            players[name][2] += a
-            players[name][3] += cs
+            # players[name][0] += k
+            # players[name][1] += d
+            # players[name][2] += a
+            # players[name][3] += cs
+            players[name].k += k
+            players[name].d += d
+            players[name].a += a
+            players[name].cs += cs
+            # players[name].pos += player_pos
 
     # Test: traverse dictionary and print names and related stats
     # print("Test: Player stats for Week 2, Summer 2019")
@@ -141,25 +149,39 @@ def get_scoreboard(url):
 
         # check for presence in team dict and then add accordingly
         if blue_name not in teams:
-            teams[blue_name] = [blue_result, blue_towers, blue_barons, blue_dragons, blue_heralds, blue_fastwin]
+            # teams[blue_name] = [blue_result, blue_towers, blue_barons, blue_dragons, blue_heralds, blue_fastwin]
+            teams[blue_name] = LolTeam(blue_name, blue_result, blue_towers, blue_barons, blue_dragons, blue_heralds, blue_fastwin)
         else:
-            teams[blue_name][0] += blue_result
-            teams[blue_name][1] += blue_towers
-            teams[blue_name][2] += blue_barons
-            teams[blue_name][3] += blue_dragons
-            teams[blue_name][4] += blue_heralds
-            teams[blue_name][5] += blue_fastwin
+            # teams[blue_name][0] += blue_result
+            # teams[blue_name][1] += blue_towers
+            # teams[blue_name][2] += blue_barons
+            # teams[blue_name][3] += blue_dragons
+            # teams[blue_name][4] += blue_heralds
+            # teams[blue_name][5] += blue_fastwin
+            teams[blue_name].wins += blue_result
+            teams[blue_name].towers += blue_towers
+            teams[blue_name].barons += blue_barons
+            teams[blue_name].dragons += blue_dragons
+            teams[blue_name].heralds += blue_heralds
+            teams[blue_name].fastwins += blue_fastwin
 
         # do the same for red
         if red_name not in teams:
-            teams[red_name] = [red_result, red_towers, red_barons, red_dragons, red_heralds, red_fastwin]
+            # teams[red_name] = [red_result, red_towers, red_barons, red_dragons, red_heralds, red_fastwin]
+            teams[red_name] = LolTeam(red_name, red_result, red_towers, red_barons, red_dragons, red_heralds, red_fastwin)
         else:
-            teams[red_name][0] += red_result
-            teams[red_name][1] += red_towers
-            teams[red_name][2] += red_barons
-            teams[red_name][3] += red_dragons
-            teams[red_name][4] += red_heralds
-            teams[red_name][5] += red_fastwin
+            # teams[red_name][0] += red_result
+            # teams[red_name][1] += red_towers
+            # teams[red_name][2] += red_barons
+            # teams[red_name][3] += red_dragons
+            # teams[red_name][4] += red_heralds
+            # teams[red_name][5] += red_fastwin
+            teams[red_name].wins += red_result
+            teams[red_name].towers += red_towers
+            teams[red_name].barons += red_barons
+            teams[red_name].dragons += red_dragons
+            teams[red_name].heralds += red_heralds
+            teams[red_name].fastwins += red_fastwin
 
     # Test: traverse team dictionary to print names and related stats
     # print("Test: Team stats for Week 2, Summer 2019")
