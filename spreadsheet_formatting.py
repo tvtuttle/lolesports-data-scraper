@@ -289,7 +289,6 @@ def output_fantasy_results(dest_filename, title, results):
 
         # because sub dict uses weird entries, i think i need to loop through
         # should be inexpensive, just 2 per
-        #todo: alter due to change from sub dict to sub list of tuples
         sub_num = 1
         for sub in results[name].subs:
             ws1['A' + str(row)] = "Sub-"+str(sub_num)
