@@ -29,9 +29,7 @@ if __name__ == "__main__":
     now_date = datetime.datetime.now()
     now_year = now_date.year # type is int
     while not is_int(year) or int(year) < 2019 or int(year) > now_year:
-        year = input("Invalid year. Please select a supported year (2018 - Present): ")
-    # while year not in ['2018', '2019', '2020', '2021']: #TODO make this and other checks more robust
-    #     year = input("Invalid year. Please select a supported year (2019, 2020): ")
+        year = input("Invalid year. Please select a supported year (2019 - Present): ")
 
     season = input("Please choose a season (Spring, Summer): ")
     season = season.lower()
@@ -49,7 +47,6 @@ if __name__ == "__main__":
     output_path = input("Please enter the preferred output location of your fantasy team results: ")
 
     title = (league + " " + year + " " + season + ", Week " + week)
-    # print(title)
     # generate url based on input
     # this is reliant on leaguepedia maintaining consistent url naming guidelines
     url = "https://lol.gamepedia.com/" + league + "/" + year + "_Season/" + season + "_Season/Scoreboards"

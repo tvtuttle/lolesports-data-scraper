@@ -82,13 +82,6 @@ def output_fantasy_results(dest_filename, title, results):
     # to get the winner, compare scores of all members of results, the key with highscore wins
     winner = list()
     win_color = list()
-    # for name in results:
-    #     if len(winner) == 0 or results[name][4] > results[winner[0]][4]:
-    #         winner = [name]
-    #         win_color = [results[name][3]]
-    #     elif results[name][4] == results[winner[0]][4]:
-    #         winner.append(name)
-    #         win_color.append(results[name][3])
     for name in results:
         if len(winner) == 0 or results[name].get_score() > results[winner[0]].get_score():
             winner = [name]
@@ -157,18 +150,9 @@ def output_fantasy_results(dest_filename, title, results):
         row += 1
 
         ws1['A' + str(row)] = "Team"
-        # team = results[name][2][0]
         team = results[name].team
-        # ws1['B' + str(row)] = team
         ws1['B' + str(row)] = team.name
         # now, fill in team stats from teams and final score from results
-        # ws1['C'+str(row)] = teams[team][0]
-        # ws1['D' + str(row)] = teams[team][1]
-        # ws1['E' + str(row)] = teams[team][2]
-        # ws1['F' + str(row)] = teams[team][3]
-        # ws1['G' + str(row)] = teams[team][4]
-        # ws1['H' + str(row)] = teams[team][5]
-        # ws1['J' + str(row)] = results[name][2][1]
         ws1['C' + str(row)] = team.wins
         ws1['D' + str(row)] = team.towers
         ws1['E' + str(row)] = team.barons
@@ -209,13 +193,6 @@ def output_fantasy_results(dest_filename, title, results):
         # player entries for each position
         # individual stats from players, name and score from results
         ws1['A' + str(row)] = "Top"
-        # top = results[name][0][1][0]
-        # ws1['B' + str(row)] = top
-        # ws1['C' + str(row)] = players[top][0]
-        # ws1['D' + str(row)] = players[top][1]
-        # ws1['E' + str(row)] = players[top][2]
-        # ws1['F' + str(row)] = players[top][3]
-        # ws1['G' + str(row)] = results[name][0][1][1]
         top = results[name].starters[1]
         ws1['B' + str(row)] = top.name
         ws1['C' + str(row)] = top.k
@@ -315,15 +292,12 @@ def output_fantasy_results(dest_filename, title, results):
         #todo: alter due to change from sub dict to sub list of tuples
         sub_num = 1
         for sub in results[name].subs:
-            # sub_name = results[name][1][sub][0]
-            # sub_name = sub[0]
             ws1['A' + str(row)] = "Sub-"+str(sub_num)
             ws1['B' + str(row)] = sub.name
             ws1['C' + str(row)] = sub.k
             ws1['D' + str(row)] = sub.d
             ws1['E' + str(row)] = sub.a
             ws1['F' + str(row)] = sub.cs
-            # ws1['G' + str(row)] = results[name][1][sub][1]
             ws1['G' + str(row)] = sub.get_score()
             # apply formatting
             ws1['A' + str(row)].style = 'bold_style'
