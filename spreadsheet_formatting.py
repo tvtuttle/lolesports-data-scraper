@@ -3,6 +3,7 @@
 
 import openpyxl
 from colour import Color
+import os
 
 
 def name_colors():
@@ -312,4 +313,5 @@ def output_fantasy_results(dest_filename, title, results):
         row += 1
 
     wb.save(dest_filename)
+    os.startfile(dest_filename)
 

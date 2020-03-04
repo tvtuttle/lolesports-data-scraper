@@ -5,6 +5,7 @@
 import tkinter as tk
 import tkinter.filedialog as fd
 import os
+from fantasy_spreadsheet_io import play_fantasy
 
 # global file variables
 ifile = None
@@ -20,6 +21,20 @@ def openfile():
     global ifile_name
     ifile = fd.askopenfile(mode='r')
     ifile_name.set(ifile.name)
+
+
+# expects string input
+def buildurl(l, y, s, w):
+    url = "https://lol.gamepedia.com/" + l + "/" + y + "_Season/" + s + "_Season/Scoreboards"
+    if w != '1':
+        url += "/Week " + w
+    return url
+
+
+def buildtitle(l, y, s, w):
+    title = (l + " " + y + " " + s + ", Week " + w)
+    return title
+
 
 # main
 if __name__ == "__main__":
@@ -89,23 +104,40 @@ if __name__ == "__main__":
     ifile_label.pack(side="left")
 
     ifile_name = tk.StringVar()
-    ifile_name.set("Choose file...")
+    ifile_name.set("Choose file:")
     ifile_button = tk.Button(ifile_frame, command=openfile, textvariable=ifile_name)
     ifile_button.pack(side="left")
 
-    # output file name field (.xlsx auto-appended, so not needed to enter)
+    # output file name field (currently, .xlsx must be appended, auto-append not added yet)
     ofile_frame = tk.Frame(m)
     ofile_frame.pack()
     ofile_label = tk.Label(ofile_frame, text="Output Filename:")
     ofile_label.pack(side="left")
     ofile_name = tk.StringVar()
-    ofile_name.set("results")
+    ofile_name.set("results.xlsx")
     ofile_entry = tk.Entry(ofile_frame, textvariable=ofile_name)
     ofile_entry.pack(side="left")
-    ofile_suffix = tk.Label(ofile_frame, text=".xlsx")
-    ofile_suffix.pack(side="left")
+    # ofile_suffix = tk.Label(ofile_frame, text=".xlsx")
+    # ofile_suffix.pack(side="left")
 
+    # before running play_fantasy, must build url from selection menus/radiobuttons
+    # url = "https://lol.gamepedia.com/" + league.get() + "/" + str(year.get()) + "_Season/" + season.get() + "_Season/Scoreboards"
+    # if week != '1':
+    #     url += "/Week " + str(week.get())
+
+    # finally, define title based on variables
+    # title = "Lolesports fantasy"
     # run button
+    run_frame = tk.Frame(m)
+    run_frame.pack()
+    print(ifile_name.get())
+    # print(url)
+    # print(title)
+    print(ofile_name.get())
+    run_button = tk.Button(run_frame, text="Generate and Open Results", command=lambda: play_fantasy(ifile_name.get(),
+                           buildurl(league.get(), str(year.get()), season.get(), str(week.get())),
+                           buildtitle(league.get(), str(year.get()), season.get(), str(week.get())), ofile_name.get()))
+    run_button.pack(side="left")
 
     # run gui
     m.mainloop()
