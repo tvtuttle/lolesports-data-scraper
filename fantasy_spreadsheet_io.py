@@ -9,8 +9,9 @@
 # similar to the status of last season's spreadsheets before stats were added, only without newly ignored stats
 # (i.e. no first blood or elder dragon)
 
-# stretch goals (to do later):
-#   add case flexibility to player and team names (esp. player names)
+# todo: add case flexibility to player and team names (esp. player names)
+# todo: add checks for validity of input file data and format
+
 
 import pandas as pd
 from gamepedia_fantasy_scraper import get_scoreboard
@@ -21,11 +22,18 @@ from player import FanTeam, LolPlayer, LolTeam
 
 # put the main in a function with input from fantasy-lcs-main
 def play_fantasy(input_filename, input_url, input_week, output_filename):
-    fantasy_data = pd.read_csv(input_filename, header=0)
+    # make sure input file is properly formatted
+    try:
+        fantasy_data = pd.read_csv(input_filename, header=0)
+    except:
+        print("Data is not stored in a csv format")
     # print(fantasy_data.columns.values)
 
     # get data from scraper
-    [players, teams] = get_scoreboard(input_url)
+    try:
+        [players, teams] = get_scoreboard(input_url)
+    except:
+        print("Error with scoreboard scraping -- you can't gather data from nonexistent games")
 
     # check fantasy_data player and team names against keys in players and teams
     print("Checking players...")

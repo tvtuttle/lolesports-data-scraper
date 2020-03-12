@@ -4,6 +4,7 @@
 import openpyxl
 from colour import Color
 import os
+import re
 
 
 def name_colors():
@@ -312,6 +313,11 @@ def output_fantasy_results(dest_filename, title, results):
             sub_num += 1
         row += 1
 
+    # make sure dest_filename is for a .xlsx file -- if other suffix is specified, it is ignored
+    if not dest_filename.endswith('.xlsx'):
+        # remove alternate suffix, if it is there
+        temp = re.split('\.', dest_filename)
+        dest_filename = temp[0] + '.xlsx' # get first half
     wb.save(dest_filename)
     os.startfile(dest_filename)
 
