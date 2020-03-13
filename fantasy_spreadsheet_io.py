@@ -20,20 +20,41 @@ from spreadsheet_formatting import output_fantasy_results
 from player import FanTeam, LolPlayer, LolTeam
 
 
+# some exceptions
+class FantasyError(Exception):
+
+    def __init__(self, message):
+        # self.expression = expression
+        self.message = message
+
+
+# method to allow for more comprehensive checks when reading csv
+def get_input(file):
+    # first, determine the filename belongs to a csv
+    try:
+        data = pd.read_csv(file, header=0)
+    except:
+        raise FantasyError("Input CSV must be a .csv file")
+    # todo: check formatting of user data
+    return data
+
+
 # put the main in a function with input from fantasy-lcs-main
 def play_fantasy(input_filename, input_url, input_week, output_filename):
     # make sure input file is properly formatted
-    try:
-        fantasy_data = pd.read_csv(input_filename, header=0)
-    except:
-        print("Data is not stored in a csv format")
+    # try:
+    #     fantasy_data = pd.read_csv(input_filename, header=0)
+    # except:
+    #     print("Data is not stored in a csv format")
+    fantasy_data = get_input(input_filename)
     # print(fantasy_data.columns.values)
 
     # get data from scraper
     try:
         [players, teams] = get_scoreboard(input_url)
     except:
-        print("Error with scoreboard scraping -- you can't gather data from nonexistent games")
+        raise FantasyError("Error with scoreboard scraping; please make sure that input week/split is valid")
+        # print("Error with scoreboard scraping -- you can't gather data from nonexistent games")
 
     # check fantasy_data player and team names against keys in players and teams
     print("Checking players...")

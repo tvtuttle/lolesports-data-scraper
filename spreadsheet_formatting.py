@@ -318,6 +318,14 @@ def output_fantasy_results(dest_filename, title, results):
         # remove alternate suffix, if it is there
         temp = re.split('\.', dest_filename)
         dest_filename = temp[0] + '.xlsx' # get first half
-    wb.save(dest_filename)
-    os.startfile(dest_filename)
+    # wb.save(dest_filename)
+    # os.startfile(dest_filename)
+
+    # alternative: save in folder in project directory (or even outside)
+    if not os.path.exists('fantasy_results'):
+        os.makedirs('fantasy_results')
+    final_path = 'fantasy_results\\' + dest_filename
+    # final_path = os.path.expanduser('~\\Documents\\'+dest_filename)
+    wb.save(final_path)
+    os.startfile(final_path)
 
