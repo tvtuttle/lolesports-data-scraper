@@ -1,0 +1,22 @@
+This file contains plans, ideas, and general ramblings regarding future updates to this program.
+
+Current priorities:
+Error Handling -- creating more specialized exceptions, handling issues that don't raise errors but cause real problems
+    (for instance, player capitalization/name changes)
+
+Creating a better system for team input:
+    While the specially-formatted csv system works, it is annoying to upkeep and vulnerable to human error in terms of
+    having to manually add and remove players from rosters week by week.
+    It would be far more useful to have team management built in to the program, with its own gui implementation.
+    This would also allow for implementation of a player draft system into the program, as well as trades and others.
+
+    A great resource for determining the valid players for this system is the home page for each split
+    (example: https://lol.gamepedia.com/LCS/2020_Season/Spring_Season); this page has the rosters for each team and seems
+    to be updated whenever a player is substituted into a game, containing all the players to play all the positions for
+    each team this season. By building player objects from this data from the very start, we can avoid previously nasty
+    bugs related to faulty team input (such as starting players in positions the never played). However, I do not know how
+    the wiki will handle players that change positions mid-season (as G2 has been rumored to, with Caps and PERKZ swapping
+    between mid and bot roles), so that is a potential issue that will have to be investigated.
+    (UPDATE: after looking through past season pages, I found that mid-season roleswap players in the past have a single
+    team entry, and multiple position symbols in that entry, as in P1 slooshi in summer 2016; must account for that. It
+    may be difficult to scrape lane identities from these seemingly-unnamed symbols, but I will try my best)
