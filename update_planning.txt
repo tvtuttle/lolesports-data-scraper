@@ -19,4 +19,13 @@ Creating a better system for team input:
     between mid and bot roles), so that is a potential issue that will have to be investigated.
     (UPDATE: after looking through past season pages, I found that mid-season roleswap players in the past have a single
     team entry, and multiple position symbols in that entry, as in P1 slooshi in summer 2016; must account for that. It
-    may be difficult to scrape lane identities from these seemingly-unnamed symbols, but I will try my best)
+    may be difficult to scrape lane identities from these seemingly-unnamed symbols, but I will try my best).
+    (UPDATE 2: I have looked into how to identify the players' roles from scraping, and it seems to not be possible to find
+    it from the roles on the main page; however, when link to edit the page is selected, the text on the edit page gives
+    all the information needed, even though editing is impossible when the visitor is not a user. This is a possible, if
+    messy, workaround, if a better method of finding player roles is not identified.)
+    (UPDATE 3: The method described in update 2 was found to be inconsistent, due to the differences in roster locations
+    across pages making it hard to access them with a formatted url. However, I have found that it is easy to identify role
+    icons and other information in the Team Rosters tab of each season, example: https://lol.gamepedia.com/LEC/2020_Season/Spring_Season/Team_Rosters,
+    so I will endeavor to use this information. For the specific issue of finding players who have multiple roster locations,
+    I pattern I can use is the rowspan argument for the data: a player with multiple positions will have rowspan>1.)
