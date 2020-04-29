@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from contextlib import closing
 import re
 from player import LolPlayer, LolTeam
+import pandas as pd
 
 # create function to download webpage data from internet
 # based on tutorial code from https://realpython.com/python-web-scraping-practical-introduction/
@@ -148,5 +149,95 @@ def get_scoreboard(url):
             teams[red_name].fastwins += red_fastwin
 
     return [players, teams]
+
+
+# a new scraping function, that creates a local database (well, actually a spreadsheet) of available players for a
+# given league and season, with key identifying information
+# this is the first step towards implementing player drafting and trades into the program
+def get_players(url):
+    raw_html = get_html(url)
+    print("Checking for good response...")
+    print(raw_html is not None)
+
+    html = BeautifulSoup(raw_html, 'html.parser')
+    # return html
+
+    teams = html.find_all('span', class_="mw-headline")
+    p_tables = html.find_all('table', class_= "wikitable hoverable-multirows sortable extended-rosters extended-rosters-hasres")
+    # these should both have the same length, and each i in teams gives the team for the players at i in p_tables
+
+    regions = list()
+    positions = list()
+    igns = list()
+    irl_names = list()
+    p_teams = list()
+    for i in range(10):
+        team = teams[i]
+        p_table = p_tables[i]
+        team_name = team.contents[0].contents[0].contents[0].get("title")
+        print(team_name)  # bit messy, but it works
+        # print(p_table)
+        players = p_table.find_all('tr', class_='multirow-highlighter')
+        for player in players:
+            region = player.contents[0].text
+            pos = player.contents[2].contents[0].get("title")
+            ign = player.contents[3].text
+            irl = player.contents[4].text
+            print(region + ", " + pos + ", " + ign + ", " + irl)
+            regions.append(region)
+            positions.append(pos)
+            igns.append(ign)
+            irl_names.append(irl)
+            p_teams.append(team_name)
+
+    # now create series from lists
+    regions = pd.Series(regions)
+    positions = pd.Series(positions)
+    igns = pd.Series(igns)
+    irl_names = pd.Series(irl_names)
+    p_teams = pd.Series(p_teams)
+
+    # now create dict of series, and create dataframe from dict
+    d = {'Region': regions,
+         'Position': positions,
+         'Ingame Name': igns,
+         'Name': irl_names,
+         'Team': p_teams}
+    player_data = pd.DataFrame(d)
+    # finally, export dataframe to a csv
+    player_data.to_csv("player_data.csv")
+
+if __name__ == "__main__":
+    get_players("https://lol.gamepedia.com/LCS/2020_Season/Spring_Season/Team_Rosters")
+
+    # # note: we are testing using the page for the now-complete spring 2020 lcs season
+    # # as of this time (4/28/20), there is no team_roster page available for the upcoming season
+    # # thus, this program will not be able to get information from the summer 2020 season until it is updated
+    # html = get_players("https://lol.gamepedia.com/LCS/2020_Season/Spring_Season/Team_Rosters")
+    # # each tr element is a table row, and the player and coach rows have this class (other classes for different data)
+    # divs = html.find_all('tr', class_='multirow-highlighter')
+    # # under each tr element, we find:
+    # # 0: region eligibility -- can be extracted
+    # print(divs[0].contents[0])
+    # # 1: country flag image -- cannot be extracted
+    # # home country has no effect on player eligibility, only region, so we can ignore this
+    # print(divs[0].contents[1])
+    # # 2: role -- can be extracted
+    # print(divs[0].contents[2])
+    # # 3: player in game name -- can be extracted
+    # print(divs[0].contents[3])
+    # # 4: player real name -- can be extracted
+    # print(divs[0].contents[4])
+    # # all further contents involve games played in a season -- not relevant
+    # # if we want to find the team the player is playing for, we will have to search for a tag above this one
+    # # specifically, the team name for the players is located in a section before their respective table
+    # # each is marked as an html h3
+    # team_divs = html.find_all('h3')
+    # print(team_divs[0])
+    # # after this, we look at the next table with the correct tags, then extract player data from each of its rows
+    # tables = html.find_all('table', class_= "wikitable hoverable-multirows sortable extended-rosters extended-rosters-hasres")
+    # print(tables[0].text)
+    # # therefore, in the page, we can get the team by looking at each table with the above class, and players on each team
+    # # by looking at the tr objects with appropriate class within
 
 
