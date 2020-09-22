@@ -91,6 +91,12 @@ def get_scoreboard(url):
         names = div.find_all(class_='sb-teamname')
         blue_name = names[0].text
         red_name = names[1].text
+        # september 2020 update: unicode characters were added around team names that broke this, so this should
+        # remove the unicode characters
+        blue_name = blue_name.encode("ascii", "ignore")
+        blue_name = blue_name.decode()
+        red_name = red_name.encode("ascii", "ignore")
+        red_name = red_name.decode()
         blue_header = div.find(class_='side-blue')
         red_header = div.find(class_='side-red')
         blue_result = int(blue_header.text)
